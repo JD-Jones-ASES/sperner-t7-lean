@@ -22,17 +22,7 @@
     "SpernerCapacity.capacity_eq_transitiveNumber_of_card_le_six",
     "SpernerCapacity.seven_le_card_of_transitiveNumber_lt_capacity"
   ],
-  "definition_names": [
-    "SpernerCapacity.paley",
-    "SpernerCapacity.W",
-    "SpernerCapacity.T7",
-    "SpernerCapacity.IsTournament",
-    "SpernerCapacity.IsTransitiveChain",
-    "SpernerCapacity.transitiveNumber",
-    "SpernerCapacity.IsSpernerClique",
-    "SpernerCapacity.spernerCliqueNumber",
-    "SpernerCapacity.capacity"
-  ],
+  "definition_names": [],
   "permitted_axioms": [
     "propext",
     "Quot.sound",

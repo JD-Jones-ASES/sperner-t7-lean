@@ -4,7 +4,9 @@ All nineteen statements of Challenge.lean have proofs. The local build, the axio
 statement and definition checks, the certificates, the module-resolution check, the elaboration check and Palomar's
 core-notation audit of the statements pass; `python scripts/verify.py` runs them all and ends with `VERIFY: PASS`.
 The checks below were last run on the tree of the final commit; a build record is evidence for that tree only.
-Theorems are numbered as in `comparator.json`, which is also their order in Challenge.lean.
+Theorems are numbered as in `comparator.json`, which is also their order in Challenge.lean. `comparator.json` lists no `definition_names`: a name there is a definition hole whose value the
+Solution supplies; the nine definitions here are fully specified in the Challenge, so the comparator checks the
+Solution's values against them.
 
 ## Formal scope
 
@@ -73,7 +75,7 @@ Challenge.lean, and any `debug.` option in the `[leanOptions]` table of lakefile
 the nine definitions of Challenge.lean and SpernerCapacity/Defs.lean character for character and the two files'
 import lines; `check_statements.py` compares every theorem header of Challenge.lean with Solution.lean. Palomar's
 `scripts/core_notation_audit.lean` (an unmodified copy from github.com/PalomarRegistry/PalomarSubmission, fetched
-2026-10-07 UTC) prints all twenty-eight compared declarations (nineteen theorems, nine definitions) with exit 0 (61 s; it takes about 4 GB of memory).
+2026-10-07 UTC) prints all twenty-eight declarations of the statement surface (the nineteen compared theorems and the nine definitions) with exit 0 (61 s; it takes about 4 GB of memory).
 
 Lean `v4.35.0-rc2` and Mathlib `v4.35.0-rc2` (commit `065356127b1dc0016f66b7283ce0ce2c4055aa55`) are pinned by
 the committed manifest; `lake update` is never run. Every `.lean` file of the repository carries a `module` header.

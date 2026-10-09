@@ -25,6 +25,10 @@ ROOT = Path(__file__).resolve().parents[1]
 TOOLCHAIN = "leanprover/lean4:v4.35.0-rc2"
 MATHLIB_REV = "065356127b1dc0016f66b7283ce0ce2c4055aa55"
 TARGETS = ["SpernerCapacity", "Challenge", "Solution", "Test"]
+# The nine compared definitions. They are fully specified in the Challenge, so comparator.json lists none of
+# them in definition_names (a name there is a definition HOLE whose value the Solution supplies); the elaboration
+# check and the notation audit below still cover all nine.
+DEFINITIONS = ["SpernerCapacity.paley", "SpernerCapacity.W", "SpernerCapacity.T7", "SpernerCapacity.IsTournament", "SpernerCapacity.IsTransitiveChain", "SpernerCapacity.transitiveNumber", "SpernerCapacity.IsSpernerClique", "SpernerCapacity.spernerCliqueNumber", "SpernerCapacity.capacity"]
 
 
 def run(args, **kw):
@@ -82,7 +86,7 @@ def check_definition_elaboration():
     definitions module, must agree exactly: the comparator judges the elaborated constants, which
     depend on the imports through instance resolution."""
     config = json.loads((ROOT / "comparator.json").read_text(encoding="utf-8"))
-    names = config["definition_names"]
+    names = DEFINITIONS
     scratch = ROOT / ".scratch"
     scratch.mkdir(exist_ok=True)
     outputs = []
@@ -103,17 +107,17 @@ def check_notation_audit():
     args = ["lake", "env", "lean", "--run", "scripts/core_notation_audit.lean", config["challenge_module"]]
     for name in config["theorem_names"]:
         args += ["theorem", name]
-    for name in config["definition_names"]:
+    for name in DEFINITIONS:
         args += ["def", name]
     result = run(args, capture_output=True)
     try:
         rows = json.loads(result.stdout)
     except ValueError:
         rows = []
-    expected = len(config["theorem_names"]) + len(config["definition_names"])
+    expected = len(config["theorem_names"]) + len(DEFINITIONS)
     names = {row.get("name") for row in rows} if isinstance(rows, list) else set()
     ok = result.returncode == 0 and len(names) == expected and \
-        names == set(config["theorem_names"]) | set(config["definition_names"])
+        names == set(config["theorem_names"]) | set(DEFINITIONS)
     return step("core-notation audit", ok, f"{len(names)} of {expected} declarations printed")
 
 
