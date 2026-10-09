@@ -1,0 +1,559 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[hidelinks]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\emergencystretch=3em
+
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\rk}{\operatorname{rank}}
+\newcommand{\Aut}{\operatorname{Aut}}
+
+\title{A 7-vertex tournament whose Sperner capacity exceeds the order of its largest transitive subtournament}
+\author{JD Jones}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For a digraph $R$, let $w(R^n)$ be the largest set of words of length $n$ in which every ordered pair
+of distinct words has a coordinate carrying an arc from the first to the second, and let
+$C(R) = \lim_n w(R^n)^{1/n}$ be the capacity. For a tournament $T$, $t(T) \le C(T)$, where $t(T)$
+is the order of its largest transitive subtournament. The equality $C(T) = t(T)$, stated as
+Conjecture~1.1 in Alon's paper \emph{On the capacity of digraphs} (1998) and attributed there to
+K\"orner and Simonyi, was disproved in the same paper; the smallest counterexample given there
+has 67 vertices, and Alon asked for the smallest size. We show that the answer is seven. The
+subtournament $T_7$ of the Paley tournament on 23 vertices induced on $\{0,1,2,3,9,14,18\}$ has
+$t(T_7) = 4$ and an 18-point transitive clique of its second Sperner power, so
+$\sqrt{18} \le C(T_7)$; a rank-5 matrix gives $C(T_7) \le 5$. Every tournament on at most six
+vertices has $C = t$, and on seven vertices $T_7$ is the only exception up to isomorphism. So
+$T_7$ is the unique smallest counterexample, and every proper subtournament of it has $C = t$.
+The statements about $T_7$ and the Paley tournament on 23 vertices, the general tools, and the
+classification of tournaments on at most six vertices are proved in Lean~4; the uniqueness on seven
+vertices and the exact value of the square are on paper, with exact certificates.
+\end{abstract}
+
+\section{Definitions and the question}\label{sec:defs}
+
+We follow Alon \cite{alon}. Let $R$ be a digraph on a finite set $V$, written $u \to v$ for an arc.
+A set $S \subseteq V^n$ is a \emph{clique of the $n$-th Sperner power} of $R$ if for every ordered
+pair $u \ne v$ of members of $S$ there is a coordinate $i$ with $u_i \to v_i$. The pair is ordered:
+the coordinate for $(u, v)$ and the coordinate for $(v, u)$ are in general different. Let $w(R^n)$
+be the largest size of such a set. The function $n \mapsto w(R^n)$ is supermultiplicative, so the
+limit
+\[
+C(R) = \lim_{n \to \infty} w(R^n)^{1/n} = \sup_{n \ge 1} w(R^n)^{1/n}
+\]
+exists and equals the supremum. This is the \emph{capacity} of $R$, also called its Sperner capacity
+\cite{kov}; some authors use the name for $\log C(R)$ \cite{gkv, ks}. In Lean the capacity is
+defined as the supremum, so nothing about limits is assumed.
+
+We also use a one-sided notion. A sequence $u^1, \dots, u^s$ of distinct members of $V^n$ is a
+\emph{transitive clique} of the $n$-th Sperner power if for every $i < j$ some coordinate carries
+an arc from $u^i$ to $u^j$. Let $\tr(R^n)$ be its largest length. Clearly $w(R^n) \le \tr(R^n)$.
+For a tournament $T$ and $u \ne v$, no coordinate carries an arc from $u$ to $v$ exactly when, in
+every coordinate, $v_i = u_i$ or $v_i \to u_i$, that is, when $v \to u$ in the directed strong
+power. So a transitive clique of the $n$-th Sperner power of a tournament is the same thing as an
+acyclic set of its $n$-th strong power, listed in a topological order.
+
+A tournament $T$ has exactly one arc between any two distinct vertices; it is transitive if its
+arcs follow a linear order. Let $t(T)$ be the order of the largest transitive subtournament of
+$T$. Then $t(T) \le C(T)$ (Corollary~\ref{cor:lower} below).
+
+\begin{conjecture}[Conjecture~1.1 of \cite{alon}]\label{conj}
+For every tournament $T$, $C(T) = t(T)$.
+\end{conjecture}
+
+Alon attributes the conjecture to K\"orner and Simonyi, citing \cite{korner}. The same paper
+disproves it: Theorem~1.3 there gives, for every $n$, a tournament on $2n$ vertices with
+$C \ge \sqrt n$ and $t \le 4 \log_2 n + 2$, and Section~4 there gives an explicit counterexample, the
+Paley tournament $Q_{67}$, which has no transitive subtournament on 9 vertices (a computer check
+reported there) while $C(Q_{67}) \ge \sqrt{67} > 8$. Section~4 of \cite{alon} adds that it may be
+interesting to determine the smallest size of a tournament for which the conjecture fails. On the
+small cases, \cite{alon} argues the conjecture in print for every tournament on at most 4 vertices,
+from its Theorem~1.2, and reports a verification, with Szab\'o and Tardos, for at most 5 vertices,
+with no proof printed. Kiviluoto, \"Osterg\aa rd and Vaskelainen \cite{kov} determine the Sperner
+capacity of every digraph on at most 5 vertices except eight, none of which is a tournament. So
+before this note the least order of a counterexample was known to be at least 6.
+
+Throughout, $Q_p$ is the Paley tournament on $\mathbb{Z}/p$ for a prime $p \equiv 3 \pmod 4$:
+$x \to y$ if and only if $y - x$ is a nonzero square. In Lean the relation on $\mathbb{Z}/23$ is
+\texttt{paley}; the Lean name of each statement is given in brackets.
+
+\section{Two tools}\label{sec:tools}
+
+\begin{lemma}[the lift; \texttt{lift\_lemma}]\label{lem:lift}
+Let $p_0, \dots, p_{N-1} \in V^k$ be distinct, with an arc from $p_i$ to $p_j$ in some coordinate
+whenever $i < j$. Then for every $m \ge 1$ there is a clique $S$ of the $km$-th Sperner power of
+$R$ with $N^m \le ((N-1)m + 1)\,|S|$.
+\end{lemma}
+
+\begin{proof}
+For a word $a = (a_1, \dots, a_m) \in \{0, \dots, N-1\}^m$ let $L(a) \in V^{km}$ be the
+concatenation $p_{a_1} p_{a_2} \cdots p_{a_m}$. Let $a \ne b$ be two words with
+$\sum_q a_q = \sum_q b_q$. If $a_q \ge b_q$ for every $q$, the equal sums force $a = b$; so some
+$q$ has $a_q < b_q$, and symmetrically some $q'$ has $a_{q'} > b_{q'}$. In block $q$ the point
+$p_{a_q}$ sends an arc to $p_{b_q}$ in some coordinate, so $L(a)$ sends an arc to $L(b)$ in the
+corresponding coordinate of $V^{km}$; block $q'$ gives an arc from $L(b)$ to $L(a)$. Since the
+$p_i$ are distinct, $L$ is injective. So every class of words with a fixed index sum is mapped
+by $L$ to a clique of the $km$-th power. The index sum takes the $(N-1)m + 1$ values
+$0, \dots, (N-1)m$, so some class has at least $N^m / ((N-1)m + 1)$ words.
+\end{proof}
+
+The proof uses only the forward property for $i < j$. It never composes arcs, and it does not care
+whether some pairs also carry arcs backward. The lemma is standard in substance: the definition of
+the capacity through transitive cliques of the powers goes back to Gargano, K\"orner and Vaccaro
+\cite{gkv}, and Sali and Simonyi \cite{ss} prove the equivalence by a lift with the bound
+$\tr(R^k)^m/(m+1)^{\tr(R^k)}$ (see also \cite[Section~2.2.1]{simonyi}); the equal-index-sum class
+gives the sharper elementary bound used here, which is the form proved in Lean.
+
+\begin{corollary}[\texttt{rpow\_le\_capacity}, \texttt{transitiveNumber\_le\_capacity}]\label{cor:lower}
+With $p_0, \dots, p_{N-1}$ as in Lemma~\ref{lem:lift}, $N^{1/k} \le C(R)$. Hence
+$\tr(R^k)^{1/k} \le C(R)$ for every $k$, and $t(R) \le C(R)$.
+\end{corollary}
+
+\begin{proof}
+By the lemma,
+$C(R) \ge w(R^{km})^{1/(km)} \ge N^{1/k} \, ((N-1)m+1)^{-1/(km)}$ for every $m$, and the last
+factor tends to $1$. The second statement is the first for a longest transitive clique. The third
+is the case $k = 1$, with the vertices of a largest transitive subtournament in their order.
+\end{proof}
+
+Since $w \le \tr$, the corollary shows $C(R) = \sup_k \tr(R^k)^{1/k}$ as well: defining the capacity
+through transitive cliques, as \cite{kov} do, gives the same number. A transitive clique of the
+$k$-th power with more than $t^k$ points therefore proves $C > t$.
+
+\begin{lemma}[the rank bound; \texttt{capacity\_le\_of\_factorization}]\label{lem:rank}
+Let $\F$ be a field and $M \in \F^{V \times V}$ a matrix with $M_{vv} \ne 0$ for every $v$ and
+$M_{uv} = 0$ whenever $u \to v$. If $r = \rk M$, then $\tr(R^n) \le r^n$ for every $n$; in
+particular $w(R^n) \le r^n$ and $C(R) \le r$.
+\end{lemma}
+
+\begin{proof}
+Let $K = M^{\otimes n}$, indexed by $V^n$: $K_{uv} = \prod_i M_{u_i v_i}$. Then
+$\rk K = r^n$; equivalently, if $M = AB$ with $A \in \F^{V \times r}$ and $B \in \F^{r \times V}$,
+then $K = A^{\otimes n} B^{\otimes n}$ factors through $\F^{r^n}$. Let $u^1, \dots, u^s$ be a
+transitive clique of the $n$-th power. For $i < j$ some coordinate $c$ has $u^i_c \to u^j_c$, so
+$M_{u^i_c u^j_c} = 0$ and $K_{u^i u^j} = 0$; and $K_{u^i u^i} = \prod_c M_{u^i_c u^i_c} \ne 0$. So
+the $s \times s$ submatrix of $K$ on these points is triangular with a nonzero diagonal, and
+$s \le \rk K = r^n$. For a clique the submatrix is diagonal.
+\end{proof}
+
+In Lean the hypothesis is stated as a factorization $M = AB$ through $\F^r$, and the conclusion is
+$C(R) \le r$. Alon's Theorem~1.2 \cite{alon}, $C(D) \le d^- + 1$ for a digraph of maximum in-degree
+$d^-$, is the case $M_{uv} = \prod_{j \in N^-(v)} (u - j)$ over $\Q$ with $V = \{1, \dots, k\}$: as
+functions of $u$, the columns are polynomials of degree at most $d^-$, so $\rk M \le d^- + 1$.
+Reversing all arcs gives $C(D) \le d^+ + 1$. The lemma is the rank method of Haemers \cite{haemers} as adapted to digraphs by Calderbank,
+Frankl, Graham, Li and Shepp \cite{cfgls} and by Blokhuis \cite{blokhuis} (Alon \cite{alon} describes
+their method as a modification of Haemers'); for the Sperner capacity of digraphs it is stated, over the
+reals, as Theorem~4 of \cite{kov}, who credit it to \cite{cfgls}, and Alon's survey \cite{alonsurvey}
+gives an equivalent vector-representation bound over any field, credited to Alon and Tardos. We call the least rank of such a matrix over $\F$ the \emph{$\F$-minrank} of $R$.
+For a tournament, $\tr(T^1) = t(T)$, so the lemma at $n = 1$ shows that the minrank is never below
+$t$; a matrix of rank $t$ proves $C = t$.
+
+\begin{remark}[deletion]\label{rem:del}
+For any vertex $v$, $C(T) \le C(T - v) + 1$. Group a clique of $T^n$ by the set $A$ of coordinates
+equal to $v$; two words of one group agree on $A$, so their arcs lie outside $A$, and deleting $A$
+leaves a clique of $(T-v)^{n-|A|}$. Hence
+$w(T^n) \le \sum_k \binom{n}{k} w((T-v)^{n-k}) \le (C(T-v) + 1)^n$. We use this only to compare
+bounds.
+\end{remark}
+
+\section{The tournament \texorpdfstring{$T_7$}{T7}}\label{sec:t7}
+
+Let $T_7 = Q_{23}[W]$ with $W = \{0, 1, 2, 3, 9, 14, 18\}$ [\texttt{T7}]. The nonzero squares
+modulo 23 are $1, 2, 3, 4, 6, 8, 9, 12, 13, 16, 18$, and $-1$ is not a square, so $T_7$ is a
+tournament [\texttt{T7\_isTournament}]. Its 21 arcs are
+\[
+\begin{aligned}
+&0{\to}1,\ 0{\to}2,\ 0{\to}3,\ 0{\to}9,\ 0{\to}18,\ 1{\to}2,\ 1{\to}3,\ 1{\to}9,\ 1{\to}14,\
+2{\to}3,\ 2{\to}14,\\ &2{\to}18,\ 3{\to}9,\ 9{\to}2,\ 9{\to}18,\ 14{\to}0,\ 14{\to}3,\ 14{\to}9,\
+14{\to}18,\ 18{\to}1,\ 18{\to}3.
+\end{aligned}
+\]
+The out-degrees of $0, 1, 2, 3, 9, 14, 18$ are $5, 4, 3, 1, 2, 4, 2$, so the score sequence is
+$(1, 2, 2, 3, 4, 4, 5)$, and the maximum out- and in-degrees are both 5.
+
+\begin{proposition}[\texttt{transitiveNumber\_T7}]
+$t(T_7) = 4$.
+\end{proposition}
+
+\begin{proof}
+$0, 1, 2, 3$ is transitive in this order. No five vertices are transitive: a transitive
+subtournament grows only through common out-neighbours of the vertices chosen so far, and the
+search over such chains finds none of length 5. The kernel runs the same
+pruned search.
+\end{proof}
+
+\begin{theorem}[\texttt{T7\_square\_witness}, \texttt{sqrt18\_le\_capacity\_T7}]\label{thm:18}
+The eighteen points
+\[
+\begin{aligned}
+&(0,0),\ (1,0),\ (14,1),\ (0,1),\ (0,9),\ (1,9),\ (14,2),\ (0,2),\ (9,14),\\
+&(2,14),\ (3,0),\ (9,0),\ (9,3),\ (2,3),\ (3,9),\ (9,9),\ (18,2),\ (18,18)
+\end{aligned}
+\]
+of $W \times W$, in this order, form a transitive clique of the second Sperner power of $T_7$.
+Hence $\sqrt{18} \le C(T_7)$, and in particular $t(T_7) = 4 < C(T_7)$
+[\texttt{four\_lt\_capacity\_T7}, \texttt{transitiveNumber\_lt\_capacity\_T7}].
+\end{theorem}
+
+\begin{proof}
+The forward property is a check of the $153$ pairs (by \texttt{decide} in the kernel). Then
+Corollary~\ref{cor:lower} with $k = 2$ and $N = 18$ gives $\sqrt{18} \approx 4.243 \le C(T_7)$.
+\end{proof}
+
+The lift makes the counterexample concrete. With $N = 18$, $k = 2$ and $t^2 = 16$: at $m = 59$ one
+has $16^{59} \, (17 \cdot 59 + 1) < 18^{59}$, so the largest index-sum class gives
+$w(T_7^{118}) > 4^{118}$ [\texttt{T7\_exists\_clique\_gt\_four\_pow}]; and the largest coefficient
+of $(1 + x + \dots + x^{17})^{38}$ already exceeds $16^{38}$, so $w(T_7^{76}) > 4^{76}$. Both are
+exact integer comparisons (certificate 0001).
+
+\begin{proposition}\label{prop:exact}
+$\tr(T_7^2) = 18$. There are exactly $84$ transitive cliques of size $18$ in the second Sperner
+power of $T_7$.
+\end{proposition}
+
+The lower bound is Theorem~\ref{thm:18}. The upper bound is proved by the exhaustive search of
+certificate 0003, a standard-library checker that runs in about ten minutes; it was also obtained by
+three engines that share no code (a CP-SAT model with positions, a branch and bound in pure Python,
+and a SAT model with lazy cycle cuts solved by CaDiCaL). The count of 84 is a computation: two of the
+engines return identical lists. The 17-point set found first in this
+work is inclusion-maximal but not maximum: no point extends it, and it lies in none of the 84
+optimal sets.
+
+\begin{theorem}[\texttt{capacity\_T7\_le\_five}]\label{thm:ub}
+$C(T_7) \le 5$.
+\end{theorem}
+
+\begin{proof}
+Index rows and columns by $0, 1, 2, 3, 9, 14, 18$ and let
+\[
+M = \begin{pmatrix}
+1 & 0 & 0 & 0 & 0 & 0 & 0\\
+0 & 1 & 0 & 0 & 0 & 0 & 1\\
+0 & 1 & 1 & 0 & 1 & 0 & 0\\
+0 & 0 & -1 & 1 & 0 & 0 & 1\\
+0 & 0 & 0 & 1 & 1 & 0 & 0\\
+0 & 0 & 0 & 0 & 0 & 1 & 0\\
+0 & 0 & -1 & 0 & -1 & 0 & 1
+\end{pmatrix},
+\]
+so that the rows are $e_0$, $e_1 + e_{18}$, $e_1 + e_2 + e_9$, $-e_2 + e_3 + e_{18}$, $e_3 + e_9$,
+$e_{14}$ and $-e_2 - e_9 + e_{18}$. The diagonal is $1$ and every arc position is $0$ (compare with
+the list of arcs). The rows satisfy $v_{18} = v_1 - v_2 = v_3 - v_9$, and the rows at $0, 1, 2, 3, 14$ are
+independent, so $\rk_\Q M = 5$; the two
+relations come from the cyclic triangles $1 \to 2 \to 18 \to 1$ and $3 \to 9 \to 18 \to 3$. Over
+$\F_2$ the same matrix factors as $M = AB$ with
+\[
+A = \begin{pmatrix}
+1&0&0&0&0\\ 0&1&0&0&0\\ 0&0&1&0&0\\ 0&0&0&1&0\\ 0&1&1&1&0\\ 0&0&0&0&1\\ 0&1&1&0&0
+\end{pmatrix},
+\qquad
+B = \begin{pmatrix}
+1&0&0&0&0&0&0\\ 0&1&0&0&0&0&1\\ 0&1&1&0&1&0&0\\ 0&0&1&1&0&0&1\\ 0&0&0&0&0&1&0
+\end{pmatrix}:
+\]
+the rows of $B$ are the rows of $M$ at $0, 1, 2, 3, 14$, and the rows at $9$ and $18$ are
+$v_1 + v_2 + v_3$ and $v_1 + v_2$. Lemma~\ref{lem:rank} with $r = 5$ gives the claim.
+\end{proof}
+
+Alon's degree bound gives only $C(T_7) \le 6$. Rank 4 is impossible over every field, since
+Lemma~\ref{lem:rank} would give $\tr(T_7^2) \le 16 < 18$; exhaustive searches over $\F_2$ and
+$\F_3$ agree. So
+\[
+4.2426\ldots = \sqrt{18} \le C(T_7) \le 5 .
+\]
+
+\begin{proposition}\label{prop:w2}
+$w(T_7^2) = 7$, and the only clique of size 7 in the second Sperner power is the graph of the
+anti-automorphism $\varphi = (0\ 3)(1\ 18)(9\ 14)$, which fixes $2$.
+\end{proposition}
+
+\begin{proof}
+If two members $(a, b)$, $(a, b')$ of a clique share a coordinate, both arcs between them must
+come from the other coordinate, so $b \to b'$ and $b' \to b$, which is impossible. So a clique of
+the second power is the graph of a partial injection and has at most 7 points. A 7-point clique is
+the graph $\{(a, \pi(a))\}$ of a bijection $\pi$, and for $a \to a'$ the pair needs
+$\pi(a') \to \pi(a)$: $\pi$ is an anti-automorphism. Conversely the graph of an anti-automorphism
+is a clique. A search over all $7!$ permutations finds $\Aut(T_7)$ trivial and exactly one
+anti-automorphism, $\varphi$; it is unique because the anti-automorphisms form a coset of
+$\Aut(T_7)$.
+\end{proof}
+
+So $T_7$ is self-converse with a trivial automorphism group, and the square gives a clique of only 7
+points: the separation from $t^n$ appears for transitive cliques at $n = 2$, and for cliques only
+in a high power. The following are computations, labelled as such.
+\begin{itemize}
+\item $75 \le \tr(T_7^3) \le 125$. The lower bound is a witness found by simulated annealing and
+checked exactly (certificate 0007); the upper bound is Lemma~\ref{lem:rank}. Since
+$75^2 < 18^3$, the cube does not improve $\sqrt{18}$; a value of at least $77$ would.
+\item $16 \le w(T_7^3) \le 19$. The lower bound is a checked witness; the upper bound is a SAT
+refutation of 20 by two solvers (CaDiCaL and Glucose, with different encodings).
+\item Fixing one coordinate shows $w(T^n) \le |V|\, w(T^{n-1})$, so $w(T_7^4) \le 133 < 4^4$ and
+$w(T_7^5) \le 931 < 4^5$. With $w(T_7) = 1$, $w(T_7^2) = 7$ and $w(T_7^3) \le 19 < 4^3$, no clique of
+$T_7^n$ exceeds $4^n$ for $n \le 5$, and the least $n$ with $w(T_7^n) > 4^n$ lies in $[6, 76]$.
+\end{itemize}
+
+\section{Tournaments on at most six vertices}\label{sec:six}
+
+\begin{theorem}[\texttt{capacity\_eq\_transitiveNumber\_of\_card\_le\_six}]\label{thm:six}
+Every tournament $T$ on at most six vertices has $C(T) = t(T)$.
+\end{theorem}
+
+\begin{proof}
+There are $1$, $1$, $2$, $4$, $12$ and $56$ isomorphism classes of tournaments on one to six vertices. For
+each class we list a representative $T$ and an $\F_2$-matrix with diagonal $1$, zeros on the arcs
+and rank $t(T)$ (certificate 0004). Lemma~\ref{lem:rank} gives $C(T) \le t(T)$, and
+Corollary~\ref{cor:lower} gives $C(T) \ge t(T)$. The list of representatives is complete: the
+representatives are pairwise non-isomorphic, and $\sum n!/|\Aut(T)| = 2^{n(n-1)/2}$, the number of
+labelled tournaments on $n$ vertices, for each $n$. The checker recomputes $t$, the zero pattern, the
+ranks over $\F_2$ and both completeness conditions.
+
+The theorem is also proved in Lean, by a different completeness argument that the kernel checks: a
+tournament on $n$ vertices is encoded by its $\binom n2$ orientation bits; for each $n \le 6$ the
+representatives, with a factorization $AB$ over $\F_2$ of rank $t$ and a transitive $t$-chain each, are
+listed, and the kernel verifies the data and that the bitwise \emph{or} of $2^{\mathrm{code}}$ over every
+representative and every one of the $n!$ relabellings equals $2^{2^{\binom n2}} - 1$, so that every
+orientation is a relabelled representative; the factorization and the chain are then transported along
+the relabelling. For $n = 6$ this is $56 \cdot 720$ relabellings and about a minute of kernel time.
+\end{proof}
+
+For example, the 6-vertex class obtained from $Q_7$ by deleting a vertex has $t = 3$, degree bound
+4, and an $\F_2$-matrix of rank 3. An exhaustive search over all admissible $\F_2$-matrices (the
+$\binom n2$ entries opposite the arcs are free) shows more: \emph{the $\F_2$-minrank equals $t$ for
+every tournament on at most six vertices}. This is a computation, not needed for the theorem.
+
+\begin{corollary}[\texttt{seven\_le\_card\_of\_transitiveNumber\_lt\_capacity}]
+The least order of a tournament $T$ with $C(T) > t(T)$ is $7$.
+\end{corollary}
+
+\begin{proof}
+Theorem~\ref{thm:six} and Theorem~\ref{thm:18}.
+\end{proof}
+
+As a consistency check, two further engines computed $\tr(T^2)$ for every class on at most six
+vertices; it equals $t^2$ in every case, as Lemma~\ref{lem:rank} requires.
+
+\section{Seven vertices}\label{sec:seven}
+
+\begin{theorem}\label{thm:seven}
+Of the $456$ isomorphism classes of tournaments on seven vertices, $455$ have an $\F_2$-matrix with
+diagonal $1$, zeros on the arcs and rank $t$, hence $C = t$. The remaining class is that of $T_7$.
+\end{theorem}
+
+This is certificate 0005: the 456 representatives, complete by the same orbit count
+($\sum 7!/|\Aut(T)| = 2^{21}$), 455 matrices, and an explicit isomorphism from the remaining
+representative to $T_7$. The values of $t$ over the 456 classes are $3, 4, 5, 6, 7$ with
+multiplicities $1, 120, 287, 47, 1$.
+
+\begin{corollary}\label{cor:unique}
+Up to isomorphism, $T_7$ is the only tournament on seven vertices with $C > t$, and it is the unique
+smallest tournament with $C > t$. Since $T_7$ is self-converse, it is also unique up to reversing
+all arcs.
+\end{corollary}
+
+\begin{corollary}\label{cor:hered}
+Every proper subtournament $T'$ of $T_7$ has $C(T') = t(T')$. The seven subtournaments on six vertices
+fall into five isomorphism classes, all with $t = 4$. So $T_7$ is vertex-minimal with $C > t$.
+\end{corollary}
+
+\begin{proof}
+Every proper subtournament has at most six vertices; apply Theorem~\ref{thm:six}.
+\end{proof}
+
+K\"orner asked (\cite{alon}, Section~4) for a characterisation of the tournaments $T$ in which every
+subtournament $T'$ has $C(T') = t(T')$. Corollaries~\ref{cor:unique} and \ref{cor:hered} answer this
+for tournaments on at most seven vertices: such a tournament has the property if and only if it is
+not isomorphic to $T_7$. Any tournament containing a copy of $T_7$ lacks it.
+
+\begin{proposition}\label{prop:q7}
+$C(Q_7) = 3$.
+\end{proposition}
+
+\begin{proof}
+$Q_7$ has arcs $x \to y$ for $y - x \in \{1, 2, 4\}$, and $0, 1, 2$ is transitive, so $t(Q_7) \ge 3$.
+Over $\F_2$ let $M_{uv} = 1$ if $u = v$ or $v \to u$, and $0$ otherwise: the identity plus the
+converse adjacency matrix. It is the circulant of $f(x) = 1 + x^3 + x^5 + x^6$, and $f$ is
+divisible by $(x + 1)(x^3 + x + 1)$, a factor of $x^7 - 1$ of degree 4, so $\rk_{\F_2} M \le 7 - 4 = 3$.
+Lemma~\ref{lem:rank} gives $C(Q_7) \le 3$, and Corollary~\ref{cor:lower} gives $t(Q_7) = 3 = C(Q_7)$.
+\end{proof}
+
+Here the degree bound and the deletion bound both give only 4. $Q_7$ is the only tournament on seven
+vertices with $t = 3$. We have not searched the literature for this value beyond the sources of
+Section~\ref{sec:prior}.
+
+\section{The Paley tournament on 23 vertices and its neighbours}\label{sec:q23}
+
+$T_7$ was found inside $Q_{23}$, which is itself a counterexample with $t = 5$.
+
+\begin{theorem}\label{thm:q23}
+$t(Q_{23}) = 5$, and the 29 points
+\[
+\begin{aligned}
+&(22,7),\ (8,2),\ (8,3),\ (8,11),\ (1,13),\ (14,13),\ (1,6),\ (5,6),\\
+&(17,22),\ (17,7),\ (3,22),\ (3,7),\ (12,19),\ (12,22),\ (1,15),\ (5,15),\\
+&(21,19),\ (14,2),\ (14,15),\ (9,0),\ (9,2),\ (17,0),\ (17,2),\ (7,4),\\
+&(3,8),\ (7,6),\ (9,8),\ (21,8),\ (11,8)
+\end{aligned}
+\]
+form, in this order, a transitive clique of the second Sperner power of $Q_{23}$. Hence
+$\sqrt{29} \le C(Q_{23}) \le 12$, and $5 < C(Q_{23})$.
+\end{theorem}
+
+\begin{proof}
+$0, 1, 2, 3, 4$ is transitive. By translation, a transitive 6-set may be assumed to start at $0$, and
+the pruned search over common out-neighbourhoods finds none (the value $t(Q_{23}) = 5$ is in print:
+\cite{sanchez}, as reported in \cite{nmh}, and \cite[Table~2]{ms}). The forward property is a check of 406
+pairs, and Corollary~\ref{cor:lower} gives the lower bound. $Q_{23}$ is regular of degree 11, so
+Alon's Theorem~1.2 gives the upper bound 12.
+\end{proof}
+
+The Lean names are \texttt{paley\_isTournament}, \texttt{transitiveNumber\_paley},
+\texttt{five\_lt\_capacity\_paley} and \texttt{sqrt29\_le\_capacity\_paley}; the upper bound 12 is
+not formalized.
+
+Alon's anti-diagonal $\{(x, -x)\}$ gives only $w(Q_{23}^2) \ge 23$, that is $C(Q_{23}) \ge \sqrt{23}$,
+which is below 5. The lift of the 29 points gives $w(Q_{23}^{98}) > 5^{98}$ by pigeonhole at $m = 49$
+(certificate 0002).
+
+Two examples smaller than $Q_{67}$ follow from what is in print, although we did not find them stated.
+The Paley tournament $ST_{27}$ on the field with 27 elements has $t = 5$ by Sanchez-Flores
+\cite{sanchez}, and Alon's anti-diagonal $\{(a, -a)\}$, a clique of the second Sperner power because
+$x \mapsto -x$ reverses every arc, has 27 points; so $C(ST_{27}) \ge \sqrt{27} > 5$. Removing the
+point $a = 0$ gives a 26-vertex subtournament with $t \le 5$ and a 26-point clique, so
+$C \ge \sqrt{26} > 5$. We re-verified $t = 5$ and both cliques (certificate 0008).
+
+\section{What is proved in Lean, and what is on paper}\label{sec:lean}
+
+Nineteen theorems are stated in the file \texttt{Challenge.lean} of the repository
+\texttt{sperner-t7-lean} and proved in \texttt{Solution.lean}, checked by the Lean~4 kernel \cite{lean} against Mathlib
+\cite{mathlib} at tag v4.35.0-rc2, with no axioms beyond \texttt{propext},
+\texttt{Classical.choice} and \texttt{Quot.sound}. The definitions are
+\texttt{paley}, \texttt{W}, \texttt{T7}, \texttt{IsTournament}, \texttt{IsTransitiveChain},
+\texttt{transitiveNumber}, \texttt{IsSpernerClique}, \texttt{spernerCliqueNumber} and
+\texttt{capacity} (the supremum over $n \ge 1$ of $w(R^n)^{1/n}$). The statements are:
+\begin{itemize}
+\item about $T_7$: it is a tournament; $t(T_7) = 4$; the 18-point transitive clique of the second
+Sperner power; some power $T_7^n$ has a clique larger than $4^n$; $4 < C(T_7)$;
+$\sqrt{18} \le C(T_7)$; $C(T_7) \le 5$; $t(T_7) < C(T_7)$;
+\item general tools, for any digraph on a finite set: the lift (Lemma~\ref{lem:lift}, in natural
+numbers, with no finiteness assumption); $N^{1/k} \le C(R)$; $t(R) \le C(R)$; the rank bound
+(Lemma~\ref{lem:rank}, for a factorization $M = AB$ through $\F^r$ over any field);
+$C(R) \le |V|$;
+\item about $Q_{23}$: it is a tournament; $t(Q_{23}) = 5$; $5 < C(Q_{23})$; $\sqrt{29} \le C(Q_{23})$;
+\item about small tournaments: every tournament on at most six vertices has $C = t$
+(Theorem~\ref{thm:six}), and a tournament with $t < C$ has at least seven vertices.
+\end{itemize}
+Theorem~\ref{thm:seven}, Propositions~\ref{prop:exact}, \ref{prop:w2} and \ref{prop:q7}, the bounds on
+$T_7^3$, and the $26$- and $27$-vertex examples are on paper. Their finite
+data are checked by standalone Python programs in \texttt{note/certificates/} (standard library only,
+exact integers, no \texttt{assert} statements), each with forged inputs that must fail:
+
+\medskip
+\noindent
+\begin{tabular}{@{}lp{0.86\textwidth}@{}}
+0001 & the 18-point transitive clique of $T_7^2$, $t(T_7) = 4$, and the lift at $n = 118$ and $n = 76$\\
+0002 & the 29-point transitive clique of $Q_{23}^2$, $t(Q_{23}) = 5$, and the lift\\
+0003 & $\tr(T_7^2) = 18$ exactly, by an exhaustive upper-bound search\\
+0004 & $C = t$ on at most six vertices: the class lists and the rank-$t$ matrices\\
+0005 & the 455 rank-$t$ matrices on seven vertices and the isomorphism to $T_7$\\
+0006 & the rank-5 matrix for $T_7$ over $\Q$ and over $\F_2$\\
+0007 & the witnesses for $\tr(T_7^3) \ge 75$ and $w(T_7^3) \ge 16$\\
+0008 & $t = 5$ for the Paley tournament on 27 elements and the anti-diagonal cliques
+\end{tabular}
+
+\medskip
+The folder's README gives the re-run line of each certificate. The exact value 18, the
+count 84, the SAT bound $w(T_7^3) \le 19$ and the exhaustive minrank searches are computations, and
+are labelled as such where they are stated.
+
+\section{Prior art}\label{sec:prior}
+
+As of 2026-10-08 (UTC), we found no tournament on fewer than 67 vertices exhibited in print with
+capacity above its transitive number, and no statement that every tournament on six vertices has
+$C = t$. We searched \cite{alon} and Alon's survey \cite{alonsurvey}; the abstract of \cite{korner};
+\cite{kov}, whose conclusion leaves six or more vertices to further work, and Vaskelainen's thesis,
+whose 14-vertex tournament concerns Banks and Slater sets, not capacity; Simonyi's DSc dissertation
+\cite{simonyi}; the arXiv papers on Sperner capacity (arXiv:math/0312086, 0809.1522, 1309.4930,
+1406.0767, 1905.10483, 2312.09224); the Palomar registry; Hexagon; the openai/math repository; and
+the formal-conjectures repository, zbMATH and Google Scholar. The nearest examples are the 26- and
+27-vertex tournaments of Section~\ref{sec:q23}, which follow in one line from \cite{alon} and
+\cite{sanchez}. The two tools of Section~\ref{sec:tools} are standard in substance (\cite{ss},
+\cite{kov}); their values on $T_7$ and the classification of the small tournaments are what is new.
+
+\section{Open questions}\label{sec:open}
+
+\begin{enumerate}
+\item The exact value of $C(T_7)$, which lies in $[\sqrt{18}, 5]$. A transitive clique of the cube
+with 77 points would raise the lower bound.
+\item The exact values of $\tr(T_7^3) \in [75, 125]$ and $w(T_7^3) \in [16, 19]$.
+\item The least $n$ with $w(T_7^n) > 4^n$, which lies in $[6, 76]$.
+\item The least order of a counterexample with $t = 5$. By Section~\ref{sec:seven} it is at least 8,
+and $Q_{23}$ shows it is at most 23. Computations made during this work, with a single
+implementation that we have not repeated, found induced subtournaments of $Q_{23}$ on 8 to 11
+vertices with a transitive clique of the second Sperner power exceeding $t^2$: 17 points for one
+8-vertex example with $t = 4$, and 26 points for examples with $t = 5$ on 8, 9, 10 and 11
+vertices. If confirmed, the answer is 8. We list these only as leads.
+\item The capacity of $Q_{23}$, which lies in $[\sqrt{29}, 12]$, and of the Paley tournaments in
+general.
+\end{enumerate}
+
+\section*{Provenance}
+
+Claude (Anthropic) was used throughout; the theorems, proofs, searches and checkers arose in that
+process, and the repository was written by Claude. The searches used OR-Tools CP-SAT and PySAT with
+the CaDiCaL and Glucose solvers; every claim that rests on a computation has a standard-library
+checker or is labelled as a computation. The Lean development was checked by the Lean~4 kernel
+\cite{lean} against Mathlib \cite{mathlib} at tag v4.35.0-rc2. The author directed the project and
+takes responsibility for the claims. This note is licensed CC~BY-SA~4.0; the repository is MIT.
+
+\begin{thebibliography}{99}
+\bibitem{alon} N.~Alon, On the capacity of digraphs, European J.\ Combin.\ 19 (1998) 1--5,
+doi:10.1006/eujc.1997.0148.
+\bibitem{alonsurvey} N.~Alon, Graph powers, in: Contemporary Combinatorics, Bolyai Soc.\ Math.\
+Stud.\ 10, Springer (2002) 11--28.
+\bibitem{korner} J.~K\"orner, On clique growth in products of directed graphs, Graphs Combin.\ 14
+(1998) 25--36, doi:10.1007/s003730050012.
+\bibitem{ks} J.~K\"orner, G.~Simonyi, A Sperner-type theorem and qualitative independence,
+J.~Combin.\ Theory Ser.~A 59 (1992) 90--103, doi:10.1016/0097-3165(92)90100-9.
+\bibitem{gkv} L.~Gargano, J.~K\"orner, U.~Vaccaro, Qualitative independence and Sperner problems
+for directed graphs, J.~Combin.\ Theory Ser.~A 61 (1992) 173--192, doi:10.1016/0097-3165(92)90016-N.
+\bibitem{kov} J.~Kiviluoto, P.~R.~J.~\"Osterg\aa rd, V.~P.~Vaskelainen, Sperner capacity of small
+digraphs, Adv.\ Math.\ Commun.\ 3 (2009), no.~2, 125--133, doi:10.3934/amc.2009.3.125.
+\bibitem{haemers} W.~Haemers, On some problems of Lov\'asz concerning the Shannon capacity of a
+graph, IEEE Trans.\ Inform.\ Theory 25 (1979) 231--232, doi:10.1109/TIT.1979.1056027.
+\bibitem{cfgls} A.~R.~Calderbank, P.~Frankl, R.~L.~Graham, W.-C.~W.~Li, L.~A.~Shepp, The Sperner
+capacity of linear and nonlinear codes for the cyclic triangle, J.~Algebraic Combin.\ 2 (1993) 31--48,
+doi:10.1023/A:1022424630332.
+\bibitem{blokhuis} A.~Blokhuis, On the Sperner capacity of the cyclic triangle, J.~Algebraic Combin.\
+2 (1993) 123--124, doi:10.1023/A:1022455407000.
+\bibitem{sanchez} A.~Sanchez-Flores, On tournaments free of large transitive subtournaments, Graphs
+Combin.\ 14 (1998) 181--200, doi:10.1007/s003730050025.
+\bibitem{ss} A.~Sali, G.~Simonyi, Orientations of self-complementary graphs and the relation of
+Sperner and Shannon capacities, European J.\ Combin.\ 20 (1999) 93--99, doi:10.1006/eujc.1998.0256.
+\bibitem{ms} K.~Momihara, S.~Suda, Upper bounds on the size of transitive subtournaments in digraphs,
+Linear Algebra Appl.\ 530 (2017) 230--243, doi:10.1016/j.laa.2017.04.030.
+\bibitem{nmh} D.~Neiman, J.~Mackey, M.~Heule, Tighter bounds on directed Ramsey number $R(7)$,
+Graphs Combin.\ 38 (2022), article 156, doi:10.1007/s00373-022-02560-5.
+\bibitem{simonyi} G.~Simonyi, Entropies, capacities and colorings of graphs, DSc dissertation,
+Hungarian Academy of Sciences (2006).
+\bibitem{lean} L.~de~Moura, S.~Ullrich, The Lean 4 theorem prover and programming language, CADE 28,
+Lecture Notes in Computer Science, Springer (2021) 625--635, doi:10.1007/978-3-030-79876-5\_37.
+\bibitem{mathlib} The mathlib Community, The Lean mathematical library, CPP 2020, 367--381,
+doi:10.1145/3372885.3373824.
+\end{thebibliography}
+
+\end{document}

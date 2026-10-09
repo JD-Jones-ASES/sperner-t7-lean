@@ -1,0 +1,42 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "SpernerCapacity.T7_isTournament",
+    "SpernerCapacity.transitiveNumber_T7",
+    "SpernerCapacity.T7_square_witness",
+    "SpernerCapacity.T7_exists_clique_gt_four_pow",
+    "SpernerCapacity.four_lt_capacity_T7",
+    "SpernerCapacity.sqrt18_le_capacity_T7",
+    "SpernerCapacity.capacity_T7_le_five",
+    "SpernerCapacity.transitiveNumber_lt_capacity_T7",
+    "SpernerCapacity.lift_lemma",
+    "SpernerCapacity.rpow_le_capacity",
+    "SpernerCapacity.transitiveNumber_le_capacity",
+    "SpernerCapacity.capacity_le_of_factorization",
+    "SpernerCapacity.capacity_le_card",
+    "SpernerCapacity.paley_isTournament",
+    "SpernerCapacity.transitiveNumber_paley",
+    "SpernerCapacity.five_lt_capacity_paley",
+    "SpernerCapacity.sqrt29_le_capacity_paley",
+    "SpernerCapacity.capacity_eq_transitiveNumber_of_card_le_six",
+    "SpernerCapacity.seven_le_card_of_transitiveNumber_lt_capacity"
+  ],
+  "definition_names": [
+    "SpernerCapacity.paley",
+    "SpernerCapacity.W",
+    "SpernerCapacity.T7",
+    "SpernerCapacity.IsTournament",
+    "SpernerCapacity.IsTransitiveChain",
+    "SpernerCapacity.transitiveNumber",
+    "SpernerCapacity.IsSpernerClique",
+    "SpernerCapacity.spernerCliqueNumber",
+    "SpernerCapacity.capacity"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

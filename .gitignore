@@ -1,0 +1,11 @@
+.lake/
+.scratch/
+*.olean
+*.ilean
+*.trace
+*.hash
+__pycache__/
+note/*.log
+note/*.aux
+note/*.out
+.lanes-lock/

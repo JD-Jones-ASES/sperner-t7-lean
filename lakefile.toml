@@ -1,0 +1,23 @@
+name = "spernerT7Lean"
+version = "0.1.0"
+keywords = ["mathematics", "combinatorics", "sperner-capacity", "tournaments", "palomar"]
+defaultTargets = ["SpernerCapacity", "Challenge", "Solution", "Test"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+git = "https://github.com/leanprover-community/mathlib4.git"
+# lake-manifest.json pins this tag to commit 065356127b1dc0016f66b7283ce0ce2c4055aa55.
+rev = "v4.35.0-rc2"
+
+[[lean_lib]]
+name = "SpernerCapacity"
+
+[[lean_lib]]
+name = "Challenge"
+
+[[lean_lib]]
+name = "Solution"
+
+[[lean_lib]]
+name = "Test"

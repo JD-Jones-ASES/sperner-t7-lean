@@ -1,0 +1,401 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "A 7-vertex tournament whose Sperner capacity exceeds the order of its largest transitive subtournament: T₇, induced by the Paley tournament on 23 vertices on 0, 1, 2, 3, 9, 14, 18, has t = 4 and √18 ≤ C ≤ 5; every tournament on at most six vertices has C = t, so seven is the least order"
+  description: >-
+    A Lean 4 development on the capacity of digraphs in the sense of Alon (1998): w(R^n) is the
+    largest set of words of length n such that every ordered pair of distinct words has a coordinate
+    carrying an arc from the first to the second, and C(R) is the supremum of w(R^n)^(1/n), which
+    equals the limit; for a tournament T, t(T) is the order of its largest transitive subtournament
+    and t(T) ≤ C(T). Conjecture 1.1 of Alon's paper, attributed to Körner and Simonyi, asserts
+    C(T) = t(T) for every tournament; Alon disproved it with a random construction and with the
+    Paley tournament on 67 vertices, and asked for the smallest tournament on which the equality
+    fails. Let T7 be the subtournament of the Paley tournament on 23 vertices (x → y iff y − x is a
+    nonzero square mod 23) induced on 0, 1, 2, 3, 9, 14, 18. Proved here: T7 is a tournament with
+    t(T7) = 4; eighteen listed points of T7 × T7 form a transitive clique of its second Sperner
+    power; hence, by the lift lemma (N injective points of the k-th power, each earlier one dominating
+    each later one in some coordinate, give for every m a clique of the km-th power of size at least
+    N^m / ((N − 1)m + 1), by words of fixed index sum), some Sperner power of T7 has a clique larger
+    than 4^n, √18 ≤ C(T7), and t(T7) < C(T7); C(T7) ≤ 5, by an explicit rank-5 factorization over
+    GF(2) of a matrix with nonzero diagonal and zeros on the arcs, through the rank bound (a clique of
+    the n-th power indexes a nonsingular diagonal submatrix of the n-th Kronecker power, which
+    factors through F^(r^n)); the general statements N^(1/k) ≤ C(R), t(R) ≤ C(R), C(R) ≤ r for any
+    such factorization, and C(R) ≤ |V|; and, for the Paley tournament on 23 vertices, t = 5 and
+    √29 ≤ C from a 29-point transitive clique of its second Sperner power; and every tournament on
+    at most six vertices satisfies C(T) = t(T) (for each of the 1, 1, 1, 2, 4, 12, 56 isomorphism
+    classes on 0 to 6 vertices, a representative with a rank-t factorization over GF(2) and a
+    transitive t-chain, and a kernel check, by a bitset over all orientations, that every labelled
+    tournament on at most six vertices is a relabelling of a representative), so a tournament with
+    t < C has at least seven vertices and seven is the least order of a counterexample. The capacity
+    is formalized in its supremum form. On paper, in the research note of the repository, with
+    standard-library certificates: the square value 18 is exact; on seven vertices 455 of the 456
+    isomorphism classes have a rank-t matrix over GF(2) and the exception is T7, which is therefore
+    the unique smallest counterexample up to isomorphism; every proper subtournament of T7 satisfies
+    the equality; and the Paley tournament on 7 vertices has C = 3. The smallest example previously
+    exhibited has 67 vertices (examples on 27 and 26 vertices follow from Alon's argument over GF(27)
+    with a published value of t). Nothing in Lean is claimed about tournaments on seven or more vertices other than T7 and
+    the Paley tournament on 23 vertices.
+  authors: ["JD Jones"]
+  responsible_maintainers: ["JD Jones"]
+  license: "MIT"
+
+classification:
+  arxiv: ["math.CO", "cs.IT"]
+  msc2020: ["05C20", "05C35", "94A24"]
+
+sources:
+  - title: "On the Capacity of Digraphs"
+    authors: ["Noga Alon"]
+    id: "doi:10.1006/eujc.1997.0148"
+    type: "paper"
+    location: "European Journal of Combinatorics 19 (1998), no. 1, 1-5; Section 1 (definitions, Conjecture 1.1, Theorem 1.2), Section 4 (Q_p, Q_67, the smallest-size question)"
+    relationship: "other"
+    author_endorsement: "not-contacted"
+    note: >-
+      Supplies the definitions of w(G^n) and of the capacity as the supremum of w(G^n)^(1/n), restated in
+      Challenge.lean; Conjecture 1.1, attributed there to Körner and Simonyi; Theorem 1.2 (the capacity is
+      at most the maximum outdegree plus one); and Q_67, the explicit counterexample with which the paper
+      disproves the conjecture. The relationship is "other" because the theorems proved here are not in
+      the paper: T7 is a smaller counterexample to a conjecture this paper already disproved, answering
+      its question about the smallest size. The elementary facts t(T) <= C(T) and C(R) <= |V| that the
+      paper calls easy are proved in Lean; nothing of the proofs of Theorems 1.2 and 1.3 is formalized.
+  - title: "A 7-vertex tournament whose Sperner capacity exceeds the order of its largest transitive subtournament (the research note of this repository)"
+    authors: ["JD Jones"]
+    id: "note/main.tex and note/main.pdf in this repository (CC BY-SA 4.0)"
+    type: "original-proof"
+    relationship: "other"
+    author_endorsement: "participated"
+    note: >-
+      T7, its 18-point transitive clique of the second Sperner power, the rank-5 factorization over ZMod 2,
+      and the Paley tournament on 23 vertices with its 29-point transitive clique are first presented in
+      this note, and the Lean development formalizes them, with the lift lemma in an elementary form (its
+      substance is standard; see Sali and Simonyi below) and the rank bound over any field. The
+      note also carries the parts that are on paper only, each with a standard-library certificate: the
+      square value 18 is exact; every tournament on at most six vertices has capacity equal to its
+      transitive number; on seven vertices T7 is the only exception up to isomorphism, so seven is the
+      least order of a counterexample; every proper subtournament of T7 has capacity equal to its
+      transitive number.
+  - title: "On Clique Growth in Products of Directed Graphs"
+    authors: ["János Körner"]
+    id: "doi:10.1007/s003730050012"
+    type: "paper"
+    location: "Graphs and Combinatorics 14 (1998), no. 1, 25-36"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      The reference Alon gives for Conjecture 1.1. Cited for the conjecture's provenance only; nothing from
+      it is formalized.
+  - title: "A Sperner-type theorem and qualitative independence"
+    authors: ["János Körner", "Gábor Simonyi"]
+    id: "doi:10.1016/0097-3165(92)90100-9"
+    type: "paper"
+    location: "Journal of Combinatorial Theory, Series A 59 (1992), no. 1, 90-103"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: "With the paper below, where the capacity of digraphs was introduced. Background only."
+  - title: "Qualitative independence and Sperner problems for directed graphs"
+    authors: ["Luisa Gargano", "János Körner", "Ugo Vaccaro"]
+    id: "doi:10.1016/0097-3165(92)90016-N"
+    type: "paper"
+    location: "Journal of Combinatorial Theory, Series A 61 (1992), no. 2, 173-192"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      Introduces the Sperner capacity (the logarithm of the capacity used here). Background only.
+  - title: "Capacities: from information theory to extremal set theory"
+    authors: ["Luisa Gargano", "János Körner", "Ugo Vaccaro"]
+    id: "doi:10.1016/0097-3165(94)90108-2"
+    type: "paper"
+    location: "Journal of Combinatorial Theory, Series A 68 (1994), no. 2, 296-316"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: "Applications of the Sperner capacity in extremal set theory. Background only."
+  - title: "The Sperner Capacity of Linear and Nonlinear Codes for the Cyclic Triangle"
+    authors: ["A. Robert Calderbank", "Peter Frankl", "Ronald L. Graham", "Wen-Ching W. Li", "Lawrence A. Shepp"]
+    id: "doi:10.1023/A:1022424630332"
+    type: "paper"
+    location: "Journal of Algebraic Combinatorics 2 (1993), no. 1, 31-48"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      The capacity of the cyclic triangle is 2, the result that prompted the conjecture; Kiviluoto,
+      Östergård and Vaskelainen credit the rank bound to this paper. The Lean rank bound
+      capacity_le_of_factorization is written independently; nothing is taken from the paper's text.
+  - title: "On the Sperner Capacity of the Cyclic Triangle"
+    authors: ["Aart Blokhuis"]
+    id: "doi:10.1023/A:1022455407000"
+    type: "paper"
+    location: "Journal of Algebraic Combinatorics 2 (1993), no. 2, 123-124"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      A short polynomial proof for the cyclic triangle, the method behind Alon's Theorem 1.2. Background
+      only.
+  - title: "On Some Problems of Lovász Concerning the Shannon Capacity of a Graph"
+    authors: ["Willem H. Haemers"]
+    id: "doi:10.1109/TIT.1979.1056027"
+    type: "paper"
+    location: "IEEE Transactions on Information Theory 25 (1979), no. 2, 231-232"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      The rank method for the Shannon capacity. Alon 1998 describes the digraph methods of Calderbank et
+      al. and Blokhuis as a modification of it, and the rank bound proved here is its digraph form.
+      Background only.
+  - title: "On Tournaments Free of Large Transitive Subtournaments"
+    authors: ["Adolfo Sanchez-Flores"]
+    id: "doi:10.1007/s003730050025"
+    type: "paper"
+    location: "Graphs and Combinatorics 14 (1998), no. 2, 181-200"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      The Galois tournament on 27 points has no transitive subtournament on 6 vertices, and neither does the
+      quadratic-residue tournament on 23 points (as reported by Neiman, Mackey and Heule). With Alon's
+      anti-diagonal this makes 27- and 26-vertex counterexamples implicit in print; the note re-verifies
+      them by certificate. The Lean value t = 5 for the 23-vertex tournament is proved independently.
+  - title: "Sperner capacity of small digraphs"
+    authors: ["Lasse Kiviluoto", "Patric R. J. Östergård", "Vesa P. Vaskelainen"]
+    id: "doi:10.3934/amc.2009.3.125"
+    type: "paper"
+    location: "Advances in Mathematics of Communications 3 (2009), no. 2, 125-133; Theorem 4, Figure 4, Section 4"
+    relationship: "other"
+    author_endorsement: "not-contacted"
+    note: >-
+      Their Theorem 4 is the rank bound over the reals (ones on the diagonal, zeros on the arcs), which
+      they credit to Calderbank et al.; capacity_le_of_factorization is a version over any field, with
+      a proof written for this repository (the paper prints none). They determine the Sperner capacity
+      of every digraph on at most five vertices except eight, none of them a tournament, which settles
+      every tournament on at most five vertices; the note extends this to six and seven vertices by
+      certificate. Nothing of their computations is formalized.
+  - title: "Graph powers"
+    authors: ["Noga Alon"]
+    id: "https://web.math.princeton.edu/~nalon/PDFS/cap2.pdf"
+    type: "paper"
+    location: "In: B. Bollobás (ed.), Contemporary Combinatorics, Bolyai Society Mathematical Studies 10 (2002), 11-28 (Zbl 1003.05102); Section 5"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      States that the conjecture holds for every tournament on at most five vertices, and gives the bound
+      by a vector representation over any field, credited to Alon and Tardos without a printed proof; that
+      bound is equivalent to the rank bound proved here. Background only.
+  - title: "Orientations of Self-complementary Graphs and the Relation of Sperner and Shannon Capacities"
+    authors: ["Attila Sali", "Gábor Simonyi"]
+    id: "doi:10.1006/eujc.1998.0256"
+    type: "paper"
+    location: "European Journal of Combinatorics 20 (1999), no. 1, 93-99"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      Defines the capacity through transitive cliques of the powers and sketches the lift that shows the
+      two definitions agree; the Lean lift_lemma is a sharper elementary form of that lift, written for
+      this repository. Background only.
+  - title: "Entropies, capacities and colorings of graphs"
+    authors: ["Gábor Simonyi"]
+    id: "https://real-d.mtak.hu/88/"
+    type: "other"
+    location: "DSc dissertation, MTA Rényi Alfréd Matematikai Kutatóintézet, Budapest, 2006; p. 57 and Section 2.2.1"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      Notes that the capacity of tournaments was known only for transitive tournaments and a few small
+      examples, and presents the transitive-clique definition with the lift. Background only.
+  - title: "Upper bounds on the size of transitive subtournaments in digraphs"
+    authors: ["Koji Momihara", "Sho Suda"]
+    id: "doi:10.1016/j.laa.2017.04.030"
+    type: "paper"
+    location: "Linear Algebra and its Applications 530 (2017), 230-243; arXiv:1605.02469; Table 2"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      Table 2 lists the largest transitive subtournaments of Paley tournaments, among them 3 for order 7,
+      5 for order 23 and 5 for order 27. The Lean value for order 23 is proved independently. Background
+      only.
+  - title: "Tighter Bounds on Directed Ramsey Number R(7)"
+    authors: ["David Neiman", "John Mackey", "Marijn Heule"]
+    id: "doi:10.1007/s00373-022-02560-5"
+    type: "paper"
+    location: "Graphs and Combinatorics 38 (2022), no. 5, article 156; arXiv:2011.00683"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: >-
+      Reports Sanchez-Flores's observations on the quadratic-residue tournaments of orders 23 and 27.
+      Background only.
+  - title: "Dilworth Rate: A Generalization of Witsenhausen's Zero-Error Rate for Directed Graphs"
+    authors: ["Gábor Simonyi", "Ágnes Tóth"]
+    id: "doi:10.1109/TIT.2014.2381668"
+    type: "paper"
+    location: "IEEE Transactions on Information Theory 61 (2015), no. 2, 715-726; arXiv:1406.0767"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: "Recent work on the Sperner capacity of directed graphs. Background only."
+  - title: "The Zero-Undetected-Error Capacity Approaches the Sperner Capacity"
+    authors: ["Christoph Bunte", "Amos Lapidoth", "Alex Samorodnitsky"]
+    id: "doi:10.1109/TIT.2014.2322624"
+    type: "paper"
+    location: "IEEE Transactions on Information Theory 60 (2014), no. 7, 3825-3833; arXiv:1309.4930"
+    relationship: "background"
+    author_endorsement: "not-contacted"
+    note: "An information-theoretic meaning of the Sperner capacity. Background only."
+  - title: "The Lean 4 Theorem Prover and Programming Language"
+    authors: ["Leonardo de Moura", "Sebastian Ullrich"]
+    id: "doi:10.1007/978-3-030-79876-5_37"
+    type: "paper"
+    location: "Automated Deduction - CADE 28, Lecture Notes in Computer Science, Springer, 2021, 625-635"
+    relationship: "background"
+    author_endorsement: "n/a"
+    note: "The proof assistant. Cited in the note; nothing mathematical is taken from it."
+  - title: "The Lean mathematical library"
+    authors: ["The mathlib Community"]
+    id: "doi:10.1145/3372885.3373824"
+    type: "paper"
+    location: "Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs (CPP 2020), 367-381"
+    relationship: "background"
+    author_endorsement: "n/a"
+    note: "The library the development imports (tag v4.35.0-rc2). Cited in the note."
+
+related_formalizations: []
+
+status:
+  scope: >-
+    Nineteen compared theorems over nine compared definitions (the Paley tournament on ZMod 23,
+    the seven residues, T7, tournaments, transitive chains, the transitive number, Sperner cliques,
+    the clique number and the capacity in supremum form). Unconditional, all of them: T7 is a
+    tournament with transitive number 4; the 18-point transitive clique of its second Sperner power;
+    a clique larger than 4^n in some power; 4 < C(T7); √18 ≤ C(T7); C(T7) ≤ 5; t(T7) < C(T7); the
+    lift lemma; N^(1/k) ≤ C(R); t(R) ≤ C(R); the rank bound; C(R) ≤ |V|; the Paley tournament on 23
+    vertices is a tournament with transitive number 5, 5 < C and √29 ≤ C; every tournament on at
+    most six vertices has C = t; a tournament with t < C has at least seven vertices. Not in Lean:
+    the exactness of the square value 18, the uniqueness of T7 on seven vertices, and the capacity
+    of the Paley tournament on 7 vertices, which are established on paper with standard-library
+    certificates in note/. The intentional
+    placeholders of Challenge.lean are excluded from proof counts; Solution.lean does not import
+    Challenge.lean.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Classical.choice", "Quot.sound"]
+  main_results:
+    - declaration: "SpernerCapacity.T7_isTournament"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.transitiveNumber_T7"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.T7_square_witness"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.T7_exists_clique_gt_four_pow"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.four_lt_capacity_T7"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.sqrt18_le_capacity_T7"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.capacity_T7_le_five"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.transitiveNumber_lt_capacity_T7"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.lift_lemma"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.rpow_le_capacity"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.transitiveNumber_le_capacity"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.capacity_le_of_factorization"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.capacity_le_card"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.paley_isTournament"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.transitiveNumber_paley"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.five_lt_capacity_paley"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.sqrt29_le_capacity_paley"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.capacity_eq_transitiveNumber_of_card_le_six"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+    - declaration: "SpernerCapacity.seven_le_card_of_transitiveNumber_lt_capacity"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+
+fidelity:
+  notes: >-
+    The capacity is defined as the supremum over n ≥ 1 of w(R^n)^(1/n), which Alon's paper states
+    is equal to the limit; the limit form is not formalized. T7 is defined as the induced
+    subtournament of the Paley tournament on ZMod 23 through the residue map W, not by an arc table.
+    The transitive number is the supremum of the lengths of injective transitive chains. The
+    compared definitions are restated character for character in SpernerCapacity/Defs.lean with the
+    same imports as the Challenge.
+
+automation:
+  methods:
+    - method: "agent"
+      tool_setup: "Claude (Anthropic) in Claude Code: the computations, the proofs, the searches, the checkers and the repository text"
+      notes: >-
+        The 7-vertex tournament was found by a vertex-deletion search inside the Paley tournament on
+        23 vertices; the exact square value, the rank certificates and the census of tournaments on
+        at most seven vertices were computed with CP-SAT, CaDiCaL and plain Python, each by at least
+        two independent programs; the standard-library certificates under note/certificates/ are the
+        travelling checks. Human direction and review by the author; see DISCLOSURE.md.
+
+review:
+  status: "self-assessed"
+  notes: >-
+    The local checks of VERIFICATION.md (the build with the axiom audit, the source guard, the
+    definition and statement comparisons, the elaboration check of the compared definitions, the
+    certificates, Palomar's core-notation audit of the statements) were run by the author's agent
+    before submission. No independent human review.
