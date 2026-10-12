@@ -62,7 +62,7 @@ sources:
       paper calls easy are proved in Lean; nothing of the proofs of Theorems 1.2 and 1.3 is formalized.
   - title: "A 7-vertex tournament whose Sperner capacity exceeds the order of its largest transitive subtournament (the research note of this repository)"
     authors: ["JD Jones"]
-    id: "note/main.tex and note/main.pdf in this repository (CC BY-SA 4.0)"
+    id: "note/main.tex and note/main.pdf in this repository"
     type: "original-proof"
     relationship: "other"
     author_endorsement: "participated"

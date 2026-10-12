@@ -66,6 +66,6 @@ certificates, the build with the axiom audit, the module-resolution check, the e
 the nine definitions against the Challenge, and Palomar's core-notation audit);
 [VERIFICATION.md](VERIFICATION.md) lists them and their limits. [PROOF.md](PROOF.md) gives the
 mathematics with the Lean name of every step, [DISCLOSURE.md](DISCLOSURE.md) the assistance
-statement, and [note/](note/README.md) the research note (CC BY-SA 4.0) with its certificates.
+statement, and [note/](note/README.md) the research note with its certificates.
 
 License: [MIT](LICENSE).

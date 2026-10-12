@@ -24,5 +24,4 @@ Every run is short except 0003, whose exhaustive search proves the upper bound 1
 sets, the bound `w(T₇³) ≤ 19` and the exhaustive minrank searches are computations without a certificate; the note
 labels them as such.
 
-License: the note (`main.tex`, `main.pdf`) is [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/);
-the `verify.py` programs are [MIT](../LICENSE), like the rest of the repository.
+License: [MIT](../LICENSE), like the rest of the repository.
